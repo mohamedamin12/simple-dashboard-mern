@@ -1,16 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react";
 import ModalAddUser from "./modal/ModalAddUser ";
 import ModalEditUser from "./modal/ModalEditUser";
+import swal from "sweetalert";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {fetchUserData , deleteUser  } from "../redux/apiCalls/userApiCall";
+
 
 
 const UsersTable = () => {
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const users = [
-    { id: 1, username: "احمد", email: "a@gmail.com", phone: "0100055288", date: "12/05/2021", role: "user" },
-  ];
 
   const toggleAddModal = () => {
     setIsAddModalOpen(!isAddModalOpen);
@@ -24,6 +30,25 @@ const UsersTable = () => {
     setSelectedUser(user);
     toggleEditModal();
   };
+
+  useEffect(()=>{
+    dispatch(fetchUserData());
+  },[])
+
+    //** Delete User Handler
+    const deleteUserHandler = (userId) => {
+      swal({
+        title: "هل انت متأكد ؟",
+        text: "انت الان علي وشك حذف هذا المستخدم هل انت متأكد من ذلك",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((isOk) => {
+        if (isOk) {
+          dispatch(deleteUser(userId));
+        }
+      });
+    };
 
   return (
     <div className="p-4 mr-[300px] sm:p-6">
@@ -47,19 +72,17 @@ const UsersTable = () => {
               <th className="p-2 sm:p-4 text-left border">البريد الإلكتروني</th>
               <th className="p-2 sm:p-4 text-left border">رقم الهاتف</th>
               <th className="p-2 sm:p-4 text-left border">تاريخ التسجيل</th>
-              <th className="p-2 sm:p-4 text-left border">نوع المستخدم</th>
               <th className="p-2 sm:p-4 text-left border">الإجراءات</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users.map((user , index) => (
               <tr key={user.id}>
-                <td className="p-2 sm:p-4 border">{user.id}</td>
+                <td className="p-2 sm:p-4 border">{index + 1}</td>
                 <td className="p-2 sm:p-4 border">{user.username}</td>
                 <td className="p-2 sm:p-4 border">{user.email}</td>
                 <td className="p-2 sm:p-4 border">{user.phone}</td>
-                <td className="p-2 sm:p-4 border">{user.date}</td>
-                <td className="p-2 sm:p-4 border">{user.role}</td>
+                <td className="p-2 sm:p-4 border">{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td className="p-2 sm:p-4 border flex gap-2">
                   <button
                     onClick={() => handleEdit(user)}
@@ -67,7 +90,7 @@ const UsersTable = () => {
                   >
                     تعديل
                   </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                  <button onClick={()=>deleteUserHandler(user._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
                     حذف
                   </button>
                 </td>
@@ -77,9 +100,9 @@ const UsersTable = () => {
         </table>
       </div>
 
-      <ModalAddUser isModalOpen={isAddModalOpen} toggleModal={toggleAddModal} />
+      <ModalAddUser isModalOpen={isAddModalOpen} toggleModal={toggleAddModal}  />
 
-      <ModalEditUser isModalOpen={isEditModalOpen} toggleModal={toggleEditModal} userData={selectedUser} />
+      <ModalEditUser isModalOpen={isEditModalOpen} toggleModal={toggleEditModal} userData={selectedUser} users= {users} />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ModalAddProject from "./modal/ModelAddProject";
 import ModalEditProject from "./modal/ModalEditProject";
+import swal from "sweetalert";
+
 
 function ProjectsTable() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -23,6 +25,21 @@ function ProjectsTable() {
     setSelectedProject(user);
     toggleEditModal();
   };
+
+      //** Delete Project Handler
+      const deleteProjectHandler = () => {
+        swal({
+          title: "هل انت متأكد ؟",
+          text: "انت الان علي وشك حذف هذا المشروع هل انت متأكد من ذلك",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((isOk) => {
+          if (isOk) {
+            console.log(" deleted successfully ")
+          }
+        });
+      };
 
   return (
     <div className="p-6 mr-[300px] sm:p-6">
@@ -60,7 +77,7 @@ function ProjectsTable() {
                   >
                     تعديل
                   </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  <button onClick={()=>deleteProjectHandler()} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
                     حذف
                   </button>
                 </td>

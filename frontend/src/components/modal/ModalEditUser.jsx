@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { updateUser  } from "../../redux/apiCalls/userApiCall";
 
-const ModalEditUser = ({ isModalOpen, toggleModal, userData }) => {
+const ModalEditUser = ({ isModalOpen, toggleModal, userData , users }) => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -13,10 +16,14 @@ const ModalEditUser = ({ isModalOpen, toggleModal, userData }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Updated:", formData);
-    toggleModal();
+    try {
+      await dispatch(updateUser(formData , users._id)); 
+      toggleModal();
+    } catch (error) {
+      console.error("Error updating project:", error);
+    }
   };
 
   if (!isModalOpen) return null;

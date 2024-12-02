@@ -20,11 +20,11 @@ exports.getUsers = asyncHandler(async (req, res) => {
  *  @method  POST
  **/
 exports.createUser = asyncHandler(async (req, res) => {
-  const { username, email , role } = req.body;
+  const { username, email , phone  } = req.body;
   const users = await User.create({
     username,
     email,
-    role: role || "user",
+    phone,
   });
   res.status(201).json({ message: "User created successfully", data: users });
 });

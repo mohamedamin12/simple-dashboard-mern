@@ -1,9 +1,26 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { createUser } from "../../redux/apiCalls/userApiCall";
+
 /* eslint-disable react/prop-types */
-const ModalAddUser = ({ isModalOpen, toggleModal }) => {
+const ModalAddUser = ({ isModalOpen, toggleModal  }) => {
+  
+  const dispatch = useDispatch();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User Added");
+    if (username.trim() === "") return toast.error("username is required");
+    if (email.trim() === "") return toast.error("email is required");
+    if (phone.trim() === "") return toast.error("username is required");
+    
+    dispatch(createUser({ username, email, phone }));
+
     toggleModal();
   };
 
@@ -18,6 +35,8 @@ const ModalAddUser = ({ isModalOpen, toggleModal }) => {
             <label className="block text-sm font-medium mb-2">اسم المستخدم</label>
             <input
               type="text"
+              value={username}
+              onChange={(e)=> setUsername(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -26,6 +45,8 @@ const ModalAddUser = ({ isModalOpen, toggleModal }) => {
             <label className="block text-sm font-medium mb-2">البريد الإلكتروني</label>
             <input
               type="email"
+              value={email}
+              onChange={(e)=> setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -34,21 +55,12 @@ const ModalAddUser = ({ isModalOpen, toggleModal }) => {
             <label className="block text-sm font-medium mb-2"> رقم الهاتف</label>
             <input
               type="text"
+              value={phone}
+              onChange={(e)=> setPhone(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">نوع المستخدم</label>
-            <select
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            >
-            <option disabled value="">اختر نوع المستخدم</option>
-            <option value="admin">مدير</option>
-            <option value="user">عادي</option>
-            </select>            
-            </div>
           <div className="flex justify-end gap-4">
             <button
               type="button"

@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 
+
 const ModalEditProject = ({ isModalOpen, toggleModal, projectData }) => {
+
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
